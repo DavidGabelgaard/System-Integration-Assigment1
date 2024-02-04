@@ -1,0 +1,14 @@
+{
+  "name": "system-integration-node-js",
+  "version": "0.0.0",
+  "description": "System Integration NodeJs",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0"
+  },
+  "eslintConfig": {
+  }
+}
