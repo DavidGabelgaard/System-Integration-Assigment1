@@ -26,12 +26,11 @@ public class UserController : Controller
         var json = System.IO.File.ReadAllText(path);
 
         var users = JsonConvert.DeserializeObject<UserListModel>(json);
-        
+
         return Task.FromResult<object>(Ok(users));
     }
-    
-    
-    
+
+
     [Route("Csv")]
     [HttpGet]
     public async Task<object> GetCsvUser()
@@ -47,7 +46,7 @@ public class UserController : Controller
 
         return Ok(users);
     }
-    
+
     [Route("Xml")]
     [HttpGet]
     public async Task<object> GetXmlUser()
@@ -81,7 +80,26 @@ public class UserController : Controller
         return Ok(users);
     }
 
+    [Route("Txt")]
+    [HttpGet]
+    public async Task<object> GetTxtUser()
+    {
+        const string path = "../../DataFiles/User.Txt";
 
+        if (!System.IO.File.Exists(path))
+        {
+            return BadRequest("Could not find file");
+        }
+
+        var users = TranslateTxtToUserList(path);
+
+        if (users == null)
+        {
+            BadRequest("Could not get users from the file");
+        }
+
+        return Ok(users);
+    }
 
     private Task<List<UserModel>> TranslateCsvToUserList(string filePath)
     {
@@ -122,27 +140,78 @@ public class UserController : Controller
 
         return Task.FromResult(users);
     }
-    
+
     private Task<UserListModel> TranslateXmlToUserList(string filePath)
     {
         var serializer = new XmlSerializer(typeof(UserListModel));
 
         using var streamReader = new StreamReader(filePath);
-        
+
         return Task.FromResult((UserListModel)serializer.Deserialize(streamReader));
     }
 
     private UserListModel TranslateYamlToUserList(string filePath)
     {
-        
         using var streamReader = new StreamReader(filePath);
-        
+
         var deserializer = new DeserializerBuilder().Build();
 
-       var test =  deserializer.Deserialize<UserListModel>(streamReader);
-
-        return  test;
+        return deserializer.Deserialize<UserListModel>(streamReader);
     }
 
+    private UserListModel? TranslateTxtToUserList(string filePath)
+    {
+        var users = new UserListModel()
+        {
+            Users = []
+        };
 
+        var lines = System.IO.File.ReadAllLines(filePath);
+
+        var currentUser = new UserModel();
+        
+        foreach (var line in lines)
+        {
+
+            if (currentUser is { FirstName: not null, LastName: not null, Age: not null, Valid: not null } && line == string.Empty)
+            {
+                users.Users.Add(currentUser);
+                currentUser = new UserModel();
+            }
+            
+            var parts = line.Split(':');
+            if (parts.Length == 2)
+            {
+                var key = parts[0].Trim();
+                var value = parts[1].Trim();
+                
+                switch (key)
+                {
+                    case "FirstName":
+                        currentUser.FirstName = value;
+                        break;
+                    case "LastName":
+                        currentUser.LastName = value;
+                        break;
+                    case "Valid":
+                        if (bool.TryParse(value, out var parsedValid))
+                            currentUser.Valid = parsedValid;
+                        break;
+                    case "Address":
+                        currentUser.Address = value;
+                        break;
+                    case "Age":
+                        if (int.TryParse(value, out var parsedAge))
+                            currentUser.Age = parsedAge;
+                        break;
+                    case "Education":
+                        currentUser.Education ??= [];
+                        currentUser.Education.Add(value);
+                        break;
+                }
+            }
+        }
+
+        return users;
+    }
 }
