@@ -108,8 +108,8 @@ def load_users_from_txt(file_path: str) -> UserListModel:
     return UserListModel(Users=users)
 
 # Example usage:
-file_path = 'DataFiles/User.'
-user_list_from_yaml = load_users_from_yaml(file_path + 'yaml')
+file_path = '../../DataFiles/User.'
+user_list_from_yaml = load_users_from_yaml(file_path + 'Yaml')
 user_list_from_csv = load_users_from_csv(file_path + 'csv')
 user_list_from_json = load_users_from_json(file_path + 'json')
 user_list_from_xml = load_users_from_xml(file_path + 'xml')

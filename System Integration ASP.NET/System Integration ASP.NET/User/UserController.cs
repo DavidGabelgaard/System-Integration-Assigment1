@@ -9,7 +9,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace System_Integration_ASP.NET.User;
 
-[Route("api/[controller]/api/[controller]")]
+[Route("Users")]
 public class UserController : Controller
 {
     [Route("Json")]

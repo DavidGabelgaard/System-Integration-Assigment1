@@ -9,12 +9,8 @@ var app = builder.Build();
 
 app.UseAuthentication();
 
-
-
 app.MapControllers();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 
 app.Run();
