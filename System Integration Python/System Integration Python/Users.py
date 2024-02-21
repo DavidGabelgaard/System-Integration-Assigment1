@@ -13,7 +13,16 @@ class UserModel(object):
        self.Education = Education
     def __str__(self) -> str:
         return f"UserModel: FirstName={self.FirstName}, LastName={self.LastName}, Valid={self.Valid}, Address={self.Address}, Age={self.Age}, Education={self.Education}"
-
+    
+    def to_dict(self):
+        return {
+            "FirstName": self.FirstName,
+            "LastName": self.LastName,
+            "Valid": self.Valid,
+            "Address": self.Address,
+            "Age": self.Age,
+            "Education": self.Education
+        }
 
 class UserListModel(object):
     def __init__(self, Users):
@@ -21,3 +30,8 @@ class UserListModel(object):
     def __str__(self) -> str:
         user_strings = [str(user) for user in self.Users]
         return '\n'.join(user_strings)
+    
+    def to_dict(self):
+        return {
+            "Users": [user.to_dict() for user in self.Users]
+        }

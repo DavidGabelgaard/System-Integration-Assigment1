@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-
 namespace System_Integration_ASP.NET.User;
 
 [Route("Users")]
